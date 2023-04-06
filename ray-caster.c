@@ -61,6 +61,7 @@ void mapDraw() {
 struct Player {
     SDL_Rect body;
     int x, y, size;
+    int speed;
 };
 
 struct Player player;
@@ -86,7 +87,8 @@ void init() {
     // <- window
 
     // player ->
-    player.size = 2; player.body.w = player.size; player.body.h = player.size;
+    player.size = 5; player.body.w = player.size; player.body.h = player.size;
+    player.speed = 2;
     player.x = (int)((map_x * tile_size) / 2); player.y = (int)((map_y * tile_size) / 2);
     // <- player
 }
@@ -103,6 +105,23 @@ void event() {
                 window.quit = true;
                 break;
             // <- window
+
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    // player ->
+                    case SDLK_a:
+                        player.x -= player.speed; break;
+                    case SDLK_w:
+                        player.y -= player.speed; break;
+                    case SDLK_s:
+                        player.y += player.speed; break;
+                    case SDLK_d:
+                        player.x += player.speed; break;
+                    // <- player
+                    
+                    default:
+                        break;
+                }
 
             default:
                 break;
