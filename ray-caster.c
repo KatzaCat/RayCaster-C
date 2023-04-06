@@ -19,6 +19,43 @@ struct Window window;
 
 // <- window
 
+// map ->
+
+int map_x = 8, map_y = 8;
+int tile_size = 10;
+
+const char map[] = { // want colors
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+    'w', '.', '.', 'w', '.', '.', '.', 'w', 
+    'w', '.', '.', 'w', '.', 'r', '.', 'w', 
+    'w', '.', '.', 'w', '.', 'g', '.', 'w', 
+    'w', '.', '.', '.', '.', 'b', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+};
+
+void mapDraw() {
+    SDL_Rect rect;
+    for (int y = 0; y < map_y; ++y) {
+        for (int x = 0; x < map_x; ++x) {
+            // set draw color
+            if (map[y * map_x + x] == '.') SDL_SetRenderDrawColor(window.renderer, 0  , 0  , 0  , 255); 
+            if (map[y * map_x + x] == 'w') SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255); 
+            if (map[y * map_x + x] == 'r') SDL_SetRenderDrawColor(window.renderer, 255, 0  , 0  , 255); 
+            if (map[y * map_x + x] == 'g') SDL_SetRenderDrawColor(window.renderer, 0  , 255, 0  , 255); 
+            if (map[y * map_x + x] == 'b') SDL_SetRenderDrawColor(window.renderer, 0  , 0  , 255, 255); 
+
+            rect.w = tile_size - 1; rect.h = tile_size - 1;
+            rect.x = x * tile_size; rect.y = y * tile_size;
+
+            SDL_RenderFillRect(window.renderer, &rect);
+        }
+    }
+}
+
+// <- map
+
 void init() {
     // SDL initilization
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) > 0) {printf("INITALIZATION OF SDL VIDEO AND AUDIO FAILED WITH ERROR: %s", SDL_GetError()); window.quit = true;}
@@ -46,6 +83,8 @@ void draw() {
     SDL_SetRenderDrawColor(window.renderer, 10, 10, 10, 255); // a dark grey
     SDL_RenderClear(window.renderer);
     // <- window
+
+    mapDraw();
 
     SDL_RenderPresent(window.renderer);
 }
