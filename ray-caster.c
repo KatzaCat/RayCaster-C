@@ -72,9 +72,17 @@ void update() {}
 void event() {
     SDL_Event event;
     while(SDL_PollEvent(&event)) {
-        // window ->
-        if(event.type == SDL_QUIT){window.quit = true;}
-        // <- window
+        
+        switch (event.type) {
+            // window ->
+            case SDL_QUIT:
+                window.quit = true;
+                break;
+            // <- window
+
+            default:
+                break;
+        }
     }
 }
 
