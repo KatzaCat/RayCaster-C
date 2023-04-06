@@ -41,7 +41,11 @@ void event() {
     }
 }
 
-void draw() {}
+void draw() {
+    SDL_SetRenderDrawColor(window.renderer, 10, 10, 10, 255);
+    SDL_RenderClear(window.renderer);
+    SDL_RenderPresent(window.renderer);
+}
 
 void destroy() {
     SDL_DestroyWindow(window.window);
