@@ -42,8 +42,11 @@ void event() {
 }
 
 void draw() {
-    SDL_SetRenderDrawColor(window.renderer, 10, 10, 10, 255);
+    // window ->
+    SDL_SetRenderDrawColor(window.renderer, 10, 10, 10, 255); // a dark grey
     SDL_RenderClear(window.renderer);
+    // <- window
+
     SDL_RenderPresent(window.renderer);
 }
 
