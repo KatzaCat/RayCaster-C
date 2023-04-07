@@ -103,6 +103,7 @@ void init() {
     player.size = 5; player.body.w = player.size; player.body.h = player.size;
     player.speed = 2;
     player.x = (map_x * tile_size) / 2; player.y = (map_y * tile_size) / 2;
+    player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2;
     // <- player
 }
 
