@@ -8,6 +8,7 @@
 #define PI 3.141592653589793238462643383279502884197
 #define P2 PI/2
 #define P3 3*PI/2
+#define DEG 0.0174533
 // fuck radiens
 
 
@@ -100,11 +101,11 @@ float dist(float ax, float ay, float bx, float by, float anglw) {
 void raysDraw() {
     // var initilization
     int dof, mx, my, mpos;
-    float ray_x, ray_y, offset_x, offset_y, ray_angle;
+    float ray_x, ray_y, offset_x, offset_y, ray_angle, dis;
 
-    ray_angle = player.angle;
+    ray_angle = player.angle - DEG * 30; if (ray_angle < 0) {ray_angle += 2*PI;} if (ray_angle > 2*PI) {ray_angle -= 2*PI;}
 
-    for (int ray = 0; ray < 1; ++ray) {
+    for (int ray = 0; ray < 60; ++ray) {
         // check horizontal ->
         dof = 0;
         float aTan = -1 / tan(ray_angle);
@@ -142,10 +143,12 @@ void raysDraw() {
         // <- check vertical
 
         // draw ray
-        if (disV < disH) {ray_x = vx; ray_y = vy;}
-        if (disV > disH) {ray_x = hx; ray_y = hy;}
+        if (disV < disH) {ray_x = vx; ray_y = vy; dis = disV;}
+        if (disV > disH) {ray_x = hx; ray_y = hy; dis = disH;}
 
         SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255); SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
+
+        ray_angle += DEG; if (ray_angle < 0) {ray_angle += 2*PI;} if (ray_angle > 2*PI) {ray_angle -= 2*PI;}
     }
 }
 
