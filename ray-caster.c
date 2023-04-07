@@ -6,6 +6,8 @@
 // math qwq
 #include <math.h>
 #define PI 3.141592653589793238462643383279502884197
+#define P2 PI/2
+#define P3 3*PI/2
 // fuck radiens
 
 
@@ -91,6 +93,10 @@ void playerDraw() {
 
 // rays ->
 
+float dist(float ax, float ay, float bx, float by, float anglw) {
+    return (sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay)));
+}
+
 void raysDraw() {
     // var initilization
     int dof, mx, my, mpos;
@@ -103,6 +109,8 @@ void raysDraw() {
         dof = 0;
         float aTan = -1 / tan(ray_angle);
 
+        float disH = 1000000000, hx = player.x, hy = player.y;
+
         if (ray_angle > PI) {ray_y = (((int)player.y / tile_size) * tile_size) -   0.00001; ray_x = (player.y - ray_y) * aTan + player.x; offset_y = -tile_size; offset_x = -offset_y * aTan;} //looking up
         if (ray_angle < PI) {ray_y = (((int)player.y / tile_size) * tile_size) + tile_size; ray_x = (player.y - ray_y) * aTan + player.x; offset_y =  tile_size; offset_x = -offset_y * aTan;} //looking down
         if (ray_angle == 0 || ray_angle == PI) {ray_x = player.x; ray_y = player.y; dof = 8;} // straght
@@ -110,14 +118,34 @@ void raysDraw() {
         while (dof < 8) {
             mx = (int)(ray_x) / tile_size; my = (int)(ray_y) / tile_size; mpos = my * map_x + mx;
 
-            if (mpos < map_x * map_y && map[mpos] != '.') {dof = 8;} // hit wall
+            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {hx = ray_x; hy = ray_y; disH = dist(player.x, player.y, hx, hy, ray_angle); dof = 8;} // hit wall
             else {ray_x += offset_x; ray_y += offset_y; dof += 1;}
         }
         // <- check horizontal
 
+        // check vertical ->
+        dof = 0;
+        float nTan = -tan(ray_angle);
+
+        float disV = 1000000000, vx = player.x, vy = player.y;
+
+        if (ray_angle > P2 && ray_angle < P3) {ray_x = (((int)player.x / tile_size) * tile_size) -   0.00001; ray_y = (player.x - ray_x) * nTan + player.y; offset_x = -tile_size; offset_y = -offset_x * nTan;} //looking left
+        if (ray_angle < P2 || ray_angle > P3) {ray_x = (((int)player.x / tile_size) * tile_size) + tile_size; ray_y = (player.x - ray_x) * nTan + player.y; offset_x =  tile_size; offset_y = -offset_x * nTan;} //looking right
+        if (ray_angle == 0 || ray_angle == PI) {ray_x = player.x; ray_y = player.y; dof = 8;} // straght
+
+        while (dof < 8) {
+            mx = (int)(ray_x) / tile_size; my = (int)(ray_y) / tile_size; mpos = my * map_x + mx;
+
+            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {vx = ray_x; vy = ray_y; disV = dist(player.x, player.y, vx, vy, ray_angle); dof = 8;} // hit wall
+            else {ray_x += offset_x; ray_y += offset_y; dof += 1;}
+        }
+        // <- check vertical
+
         // draw ray
-        SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255);
-        SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
+        if (disV < disH) {ray_x = vx; ray_y = vy;}
+        if (disV > disH) {ray_x = hx; ray_y = hy;}
+
+        SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255); SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
     }
 }
 
