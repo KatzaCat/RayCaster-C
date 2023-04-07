@@ -89,6 +89,40 @@ void playerDraw() {
 
 // <- player
 
+// rays ->
+
+void raysDraw() {
+    // var initilization
+    int dof, mx, my, mpos;
+    float ray_x, ray_y, offset_x, offset_y, ray_angle;
+
+    ray_angle = player.angle;
+
+    for (int ray = 0; ray < 1; ++ray) {
+        // check horizontal ->
+        dof = 0;
+        float aTan = -1 / tan(ray_angle);
+
+        if (ray_angle > PI) {ray_y = (((int)player.y / tile_size) * tile_size) -   0.00001; ray_x = (player.y - ray_y) * aTan + player.x; offset_y = -tile_size; offset_x = -offset_y * aTan;} //looking up
+        if (ray_angle < PI) {ray_y = (((int)player.y / tile_size) * tile_size) + tile_size; ray_x = (player.y - ray_y) * aTan + player.x; offset_y =  tile_size; offset_x = -offset_y * aTan;} //looking down
+        if (ray_angle == 0 || ray_angle == PI) {ray_x = player.x; ray_y = player.y; dof = 8;} // straght
+
+        while (dof < 8) {
+            mx = (int)(ray_x) / tile_size; my = (int)(ray_y) / tile_size; mpos = my * map_x + mx;
+
+            if (mpos < map_x * map_y && map[mpos] != '.') {dof = 8;} // hit wall
+            else {ray_x += offset_x; ray_y += offset_y; dof += 1;}
+        }
+        // <- check horizontal
+
+        // draw ray
+        SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255);
+        SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
+    }
+}
+
+// <- rays
+
 void init() {
     // SDL initilization
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) > 0) {printf("INITALIZATION OF SDL VIDEO AND AUDIO FAILED WITH ERROR: %s", SDL_GetError()); window.quit = true;}
@@ -127,8 +161,8 @@ void event() {
                     // <- window
                     
                     // player ->
-                    case SDLK_a: player.angle -= 0.1; if (player.angle < 0   ) {player.angle += 2*PI;} player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2; break; // turn left
-                    case SDLK_d: player.angle += 0.1; if (player.angle > 2*PI) {player.angle -= 2*PI;} player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2; break; // turn right
+                    case SDLK_a: player.angle -= 0.1; if (player.angle < 0   ) {player.angle += 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break; // turn left
+                    case SDLK_d: player.angle += 0.1; if (player.angle > 2*PI) {player.angle -= 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break; // turn right
                     case SDLK_w: player.x += player.delta_x; player.y += player.delta_y; break; // forward
                     case SDLK_s: player.x -= player.delta_x; player.y -= player.delta_y; break; // backward
                     // <- player
@@ -150,6 +184,7 @@ void draw() {
     // <- window
 
     mapDraw();
+    raysDraw();
     playerDraw();
 
     SDL_RenderPresent(window.renderer);
