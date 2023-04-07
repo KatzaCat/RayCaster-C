@@ -3,6 +3,12 @@
 
 #include <SDL2\SDL.h>
 
+// math qwq
+#include <math.h>
+#define PI 3.141592653589793238462643383279502884197
+// fuck radiens
+
+
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 #define WINDOW_TITLE "RayCaster"
@@ -60,18 +66,25 @@ void mapDraw() {
 
 struct Player {
     SDL_Rect body;
-    int x, y, size;
-    int speed;
+    float x, y, delta_x, delta_y, angle;
+    int size, speed;
 };
 
 struct Player player;
 
 void playerDraw() {
-    SDL_SetRenderDrawColor(window.renderer, 255, 183, 197, 255); // pink
-    
     player.body.x = player.x; player.body.y = player.y; // position
 
-    SDL_RenderFillRect(window.renderer, &player.body);
+    SDL_SetRenderDrawColor(window.renderer, 255, 183, 197, 255); // pink
+    SDL_RenderFillRect(window.renderer, &player.body); // draw player
+
+    SDL_SetRenderDrawColor(window.renderer, 30, 144, 197, 255); // baby blue
+    SDL_RenderDrawLine(window.renderer, 
+         player.x + (player.size / 2),                          // draw at the x of the center of the player
+         player.y + (player.size / 2),                          // draw at the y of the center of the player
+        (player.x + (player.size / 2)) + player.delta_x * 10,   // draw at the x of the center of the player plus the delta x times some number
+        (player.y + (player.size / 2)) + player.delta_y * 10    // draw at the y of the center of the player plus the delta y times some number
+        );                                                      // draw look direction
 }
 
 // <- player
@@ -89,7 +102,7 @@ void init() {
     // player ->
     player.size = 5; player.body.w = player.size; player.body.h = player.size;
     player.speed = 2;
-    player.x = (int)((map_x * tile_size) / 2); player.y = (int)((map_y * tile_size) / 2);
+    player.x = (map_x * tile_size) / 2; player.y = (map_y * tile_size) / 2;
     // <- player
 }
 
@@ -109,14 +122,10 @@ void event() {
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                     // player ->
-                    case SDLK_a:
-                        player.x -= player.speed; break;
-                    case SDLK_w:
-                        player.y -= player.speed; break;
-                    case SDLK_s:
-                        player.y += player.speed; break;
-                    case SDLK_d:
-                        player.x += player.speed; break;
+                    case SDLK_a: player.angle -= 0.1; if (player.angle < 0   ) {player.angle += 2*PI;} player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2; break; // turn left
+                    case SDLK_d: player.angle += 0.1; if (player.angle > 2*PI) {player.angle -= 2*PI;} player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2; break; // turn right
+                    case SDLK_w: player.x += player.delta_x; player.y += player.delta_y; break; // forward
+                    case SDLK_s: player.x -= player.delta_x; player.y -= player.delta_y; break; // backward
                     // <- player
                     
                     default:
