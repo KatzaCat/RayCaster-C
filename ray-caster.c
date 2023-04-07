@@ -121,6 +121,10 @@ void event() {
 
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
+                    // window ->
+                    case SDLK_ESCAPE: window.quit = true;
+                    // <- window
+                    
                     // player ->
                     case SDLK_a: player.angle -= 0.1; if (player.angle < 0   ) {player.angle += 2*PI;} player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2; break; // turn left
                     case SDLK_d: player.angle += 0.1; if (player.angle > 2*PI) {player.angle -= 2*PI;} player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2; break; // turn right
