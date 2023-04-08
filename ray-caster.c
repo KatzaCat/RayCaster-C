@@ -46,51 +46,16 @@ const char map[] = { // want colors
     'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
 };
 
-void mapDraw() {
-    SDL_Rect rect;
-    for (int y = 0; y < map_y; ++y) {
-        for (int x = 0; x < map_x; ++x) {
-            // set draw color
-            if (map[y * map_x + x] == '.') SDL_SetRenderDrawColor(window.renderer, 0  , 0  , 0  , 0  ); // black for .
-            if (map[y * map_x + x] == 'w') SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255); // white for w
-            if (map[y * map_x + x] == 'r') SDL_SetRenderDrawColor(window.renderer, 255, 0  , 0  , 255); // red for r
-            if (map[y * map_x + x] == 'g') SDL_SetRenderDrawColor(window.renderer, 0  , 255, 0  , 255); // green for g
-            if (map[y * map_x + x] == 'b') SDL_SetRenderDrawColor(window.renderer, 0  , 0  , 255, 255); // blue for b
-
-            rect.w =     tile_size; rect.h =     tile_size;
-            rect.x = x * tile_size; rect.y = y * tile_size;
-
-            SDL_RenderFillRect(window.renderer, &rect);
-        }
-    }
-}
-
 // <- map
 
 // player ->
 
 struct Player {
-    SDL_Rect body;
     float x, y, delta_x, delta_y, angle;
-    int size, speed;
+    int speed;
 };
 
 struct Player player;
-
-void playerDraw() {
-    player.body.x = player.x; player.body.y = player.y; // position
-
-    SDL_SetRenderDrawColor(window.renderer, 255, 183, 197, 255); // pink
-    SDL_RenderFillRect(window.renderer, &player.body); // draw player
-
-    SDL_SetRenderDrawColor(window.renderer, 30, 144, 197, 255); // baby blue
-    SDL_RenderDrawLine(window.renderer, 
-         player.x + (player.size / 2),                          // draw at the x of the center of the player
-         player.y + (player.size / 2),                          // draw at the y of the center of the player
-        (player.x + (player.size / 2)) + player.delta_x * 10,   // draw at the x of the center of the player plus the delta x times some number
-        (player.y + (player.size / 2)) + player.delta_y * 10    // draw at the y of the center of the player plus the delta y times some number
-        );                                                      // draw look direction
-}
 
 // <- player
 
@@ -161,14 +126,11 @@ void raysDraw() {
             if (m_horizontal == 'b') SDL_SetRenderDrawColor(window.renderer,   0,   0, 127, 255);
         }
 
-        //SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255); SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
-
         // draw walls ->
         float cos_angle = player.angle - ray_angle; if (cos_angle < 0) {cos_angle += 2*PI;} if (cos_angle > 2*PI) {cos_angle -= 2*PI;} dis = dis * cos(cos_angle); // removes fish eye
         float lineH = (tile_size * WINDOW_HEIGHT) / dis; if (lineH > WINDOW_HEIGHT) {lineH = WINDOW_HEIGHT;}
         float lineO = 360 - lineH / 2;
         SDL_RenderDrawLine(window.renderer, ray, lineO, ray, lineH + lineO);
-        //SDL_RenderSetScale(window.renderer, 1, 1);
         // <- draw walls
 
         ray_angle += DEG / 21.3333; if (ray_angle < 0) {ray_angle += 2*PI;} if (ray_angle > 2*PI) {ray_angle -= 2*PI;}
@@ -188,14 +150,11 @@ void init() {
     // <- window
 
     // player ->
-    player.size = 5; player.body.w = player.size; player.body.h = player.size;
     player.speed = 2;
     player.x = (map_x * tile_size) / 2; player.y = (map_y * tile_size) / 2;
     player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2;
     // <- player
 }
-
-void update() {}
 
 void event() {
     SDL_Event event;
@@ -238,8 +197,6 @@ void draw() {
     // <- window
 
     raysDraw();
-    //mapDraw();
-    //playerDraw();
 
     SDL_RenderPresent(window.renderer);
 }
@@ -254,7 +211,6 @@ int main(int argv, char *argc[]) {
     init();
     while (!window.quit) {
         event();
-        update();
         draw();
     }
     destroy();
