@@ -63,9 +63,7 @@ const char map[] = { // want colors
 struct Player {
     float x, y, delta_x, delta_y, angle;
     int speed;
-};
-
-struct Player player;
+}player;
 
 // <- player
 
@@ -161,7 +159,7 @@ void init() {
 
     // player ->
     player.speed = 2;
-    player.x = (map_x * tile_size) / 2; player.y = (map_y * tile_size) / 2;
+    player.x = (3 * tile_size); player.y = (3 * tile_size);
     player.delta_x = cos(player.angle) * 2; player.delta_y = sin(player.angle) * 2;
     // <- player
 }
@@ -180,14 +178,14 @@ void event() {
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                     // window ->
-                    case SDLK_ESCAPE: window.quit = true;
+                    case SDLK_ESCAPE: window.quit = true; break;
                     // <- window
                     
                     // player ->
-                    case SDLK_a: player.angle -= 0.1; if (player.angle < 0   ) {player.angle += 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break; // turn left
-                    case SDLK_d: player.angle += 0.1; if (player.angle > 2*PI) {player.angle -= 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break; // turn right
-                    case SDLK_w: player.x += player.delta_x; player.y += player.delta_y; break; // forward
-                    case SDLK_s: player.x -= player.delta_x; player.y -= player.delta_y; break; // backward
+                    case SDLK_a: player.angle -= 0.1; if (player.angle < 0   ) {player.angle += 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break;
+                    case SDLK_d: player.angle += 0.1; if (player.angle > 2*PI) {player.angle -= 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break;
+                    case SDLK_w: player.x += player.delta_x; player.y += player.delta_y; break;
+                    case SDLK_s: player.x -= player.delta_x; player.y -= player.delta_y; break;
                     // <- player
                     
                     default:
