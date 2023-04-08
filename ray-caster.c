@@ -30,18 +30,20 @@ struct Window window;
 
 // map ->
 
-int map_x = 8, map_y = 8;
+int map_x = 10, map_y = 10;
 int tile_size = 15;
 
 const char map[] = { // want colors
-    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
-    'w', '.', '.', 'w', '.', '.', '.', 'w', 
-    'w', '.', '.', 'w', '.', 'r', '.', 'w', 
-    'w', '.', '.', '.', '.', 'g', '.', 'w', 
-    'w', '.', '.', '.', '.', 'b', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+    'w', '.', '.', '.', 'w', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', 'w', '.', '.', 'g', '.', 'w', 
+    'w', '.', '.', '.', 'w', '.', '.', 'r', '.', 'w', 
+    'w', 'w', '.', 'w', 'w', '.', '.', 'b', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
 };
 
 void mapDraw() {
@@ -100,6 +102,7 @@ float dist(float ax, float ay, float bx, float by, float anglw) {
 
 void raysDraw() {
     // var initilization
+    char m_horizontal, m_vertical;
     int dof, mx, my, mpos;
     float ray_x, ray_y, offset_x, offset_y, ray_angle, dis;
 
@@ -119,7 +122,7 @@ void raysDraw() {
         while (dof < 8) {
             mx = (int)(ray_x) / tile_size; my = (int)(ray_y) / tile_size; mpos = my * map_x + mx;
 
-            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {hx = ray_x; hy = ray_y; disH = dist(player.x, player.y, hx, hy, ray_angle); dof = 8;} // hit wall
+            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {m_horizontal = map[mpos]; hx = ray_x; hy = ray_y; disH = dist(player.x, player.y, hx, hy, ray_angle); dof = 8;} // hit wall
             else {ray_x += offset_x; ray_y += offset_y; dof += 1;}
         }
         // <- check horizontal
@@ -137,14 +140,26 @@ void raysDraw() {
         while (dof < 8) {
             mx = (int)(ray_x) / tile_size; my = (int)(ray_y) / tile_size; mpos = my * map_x + mx;
 
-            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {vx = ray_x; vy = ray_y; disV = dist(player.x, player.y, vx, vy, ray_angle); dof = 8;} // hit wall
+            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {m_vertical = map[mpos]; vx = ray_x; vy = ray_y; disV = dist(player.x, player.y, vx, vy, ray_angle); dof = 8;} // hit wall
             else {ray_x += offset_x; ray_y += offset_y; dof += 1;}
         }
         // <- check vertical
 
         // draw ray
-        if (disV < disH) {ray_x = vx; ray_y = vy; dis = disV; SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255);}
-        if (disV > disH) {ray_x = hx; ray_y = hy; dis = disH; SDL_SetRenderDrawColor(window.renderer, 127, 127, 127, 255);}
+        if (disV < disH) {
+            ray_x = vx; ray_y = vy; dis = disV; 
+            if (m_vertical == 'w') SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255);
+            if (m_vertical == 'r') SDL_SetRenderDrawColor(window.renderer, 255,   0,   0, 255);
+            if (m_vertical == 'g') SDL_SetRenderDrawColor(window.renderer,   0, 255,   0, 255);
+            if (m_vertical == 'b') SDL_SetRenderDrawColor(window.renderer,   0,   0, 255, 255);
+        }
+        if (disV > disH) {
+            ray_x = hx; ray_y = hy; dis = disH; 
+            if (m_horizontal == 'w') SDL_SetRenderDrawColor(window.renderer, 127, 127, 127, 255);
+            if (m_horizontal == 'r') SDL_SetRenderDrawColor(window.renderer, 127,   0,   0, 255);
+            if (m_horizontal == 'g') SDL_SetRenderDrawColor(window.renderer,   0, 127,   0, 255);
+            if (m_horizontal == 'b') SDL_SetRenderDrawColor(window.renderer,   0,   0, 127, 255);
+        }
 
         //SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255); SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
 
@@ -223,8 +238,8 @@ void draw() {
     // <- window
 
     raysDraw();
-    mapDraw();
-    playerDraw();
+    //mapDraw();
+    //playerDraw();
 
     SDL_RenderPresent(window.renderer);
 }
