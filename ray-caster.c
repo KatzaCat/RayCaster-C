@@ -49,13 +49,13 @@ void mapDraw() {
     for (int y = 0; y < map_y; ++y) {
         for (int x = 0; x < map_x; ++x) {
             // set draw color
-            if (map[y * map_x + x] == '.') SDL_SetRenderDrawColor(window.renderer, 0  , 0  , 0  , 255); // black for .
+            if (map[y * map_x + x] == '.') SDL_SetRenderDrawColor(window.renderer, 0  , 0  , 0  , 0  ); // black for .
             if (map[y * map_x + x] == 'w') SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255); // white for w
             if (map[y * map_x + x] == 'r') SDL_SetRenderDrawColor(window.renderer, 255, 0  , 0  , 255); // red for r
             if (map[y * map_x + x] == 'g') SDL_SetRenderDrawColor(window.renderer, 0  , 255, 0  , 255); // green for g
             if (map[y * map_x + x] == 'b') SDL_SetRenderDrawColor(window.renderer, 0  , 0  , 255, 255); // blue for b
 
-            rect.w = tile_size - 1; rect.h = tile_size - 1;
+            rect.w =     tile_size; rect.h =     tile_size;
             rect.x = x * tile_size; rect.y = y * tile_size;
 
             SDL_RenderFillRect(window.renderer, &rect);
@@ -105,7 +105,7 @@ void raysDraw() {
 
     ray_angle = player.angle - DEG * 30; if (ray_angle < 0) {ray_angle += 2*PI;} if (ray_angle > 2*PI) {ray_angle -= 2*PI;}
 
-    for (int ray = 0; ray < 60; ++ray) {
+    for (int ray = 0; ray < WINDOW_WIDTH; ++ray) {
         // check horizontal ->
         dof = 0;
         float aTan = -1 / tan(ray_angle);
@@ -143,12 +143,20 @@ void raysDraw() {
         // <- check vertical
 
         // draw ray
-        if (disV < disH) {ray_x = vx; ray_y = vy; dis = disV;}
-        if (disV > disH) {ray_x = hx; ray_y = hy; dis = disH;}
+        if (disV < disH) {ray_x = vx; ray_y = vy; dis = disV; SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255);}
+        if (disV > disH) {ray_x = hx; ray_y = hy; dis = disH; SDL_SetRenderDrawColor(window.renderer, 127, 127, 127, 255);}
 
-        SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255); SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
+        //SDL_SetRenderDrawColor(window.renderer, 239, 204, 0, 255); SDL_RenderDrawLine(window.renderer, player.x + (player.size / 2), player.y + (player.size / 2), ray_x, ray_y);
 
-        ray_angle += DEG; if (ray_angle < 0) {ray_angle += 2*PI;} if (ray_angle > 2*PI) {ray_angle -= 2*PI;}
+        // draw walls ->
+        float cos_angle = player.angle - ray_angle; if (cos_angle < 0) {cos_angle += 2*PI;} if (cos_angle > 2*PI) {cos_angle -= 2*PI;} dis = dis * cos(cos_angle); // removes fish eye
+        float lineH = (tile_size * WINDOW_HEIGHT) / dis; if (lineH > WINDOW_HEIGHT) {lineH = WINDOW_HEIGHT;}
+        float lineO = 360 - lineH / 2;
+        SDL_RenderDrawLine(window.renderer, ray, lineO, ray, lineH + lineO);
+        //SDL_RenderSetScale(window.renderer, 1, 1);
+        // <- draw walls
+
+        ray_angle += DEG / 21.3333; if (ray_angle < 0) {ray_angle += 2*PI;} if (ray_angle > 2*PI) {ray_angle -= 2*PI;}
     }
 }
 
@@ -214,8 +222,8 @@ void draw() {
     SDL_RenderClear(window.renderer);
     // <- window
 
-    mapDraw();
     raysDraw();
+    mapDraw();
     playerDraw();
 
     SDL_RenderPresent(window.renderer);
