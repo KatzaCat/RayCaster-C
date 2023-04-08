@@ -63,6 +63,9 @@ const char map[] = { // want colors
 struct Player {
     float x, y, delta_x, delta_y, angle;
     int speed;
+    int x_offset, y_offset;
+    int grid_pos_x, grid_pos_add_x_offset, grid_pos_sub_x_offset;
+    int grid_pos_y, grid_pos_add_y_offset, grid_pos_sub_y_offset;
 }player;
 
 // <- player
@@ -184,8 +187,15 @@ void event() {
                     // player ->
                     case SDLK_a: player.angle -= 0.1; if (player.angle < 0   ) {player.angle += 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break;
                     case SDLK_d: player.angle += 0.1; if (player.angle > 2*PI) {player.angle -= 2*PI;} player.delta_x = cos(player.angle) * 1.5; player.delta_y = sin(player.angle) * 1.5; break;
-                    case SDLK_w: player.x += player.delta_x; player.y += player.delta_y; break;
-                    case SDLK_s: player.x -= player.delta_x; player.y -= player.delta_y; break;
+                    
+                    case SDLK_w: 
+                        if (map[player.grid_pos_y            * map_x + player.grid_pos_add_x_offset] == '.') {player.x += player.delta_x;} 
+                        if (map[player.grid_pos_add_y_offset * map_x + player.grid_pos_x           ] == '.') {player.y += player.delta_y;}
+                        break;
+                    case SDLK_s: 
+                        if (map[player.grid_pos_y            * map_x + player.grid_pos_sub_x_offset] == '.') {player.x -= player.delta_x;} 
+                        if (map[player.grid_pos_sub_y_offset * map_x + player.grid_pos_x           ] == '.') {player.y -= player.delta_y;}
+                        break;
                     // <- player
                     
                     default:
@@ -196,6 +206,13 @@ void event() {
                 break;
         }
     }
+}
+
+void update() {
+    player.grid_pos_x = player.x / tile_size; player.grid_pos_add_x_offset = (player.x + player.x_offset) / tile_size; player.grid_pos_sub_x_offset = (player.x - player.x_offset) / tile_size;
+    player.grid_pos_y = player.y / tile_size; player.grid_pos_add_y_offset = (player.y + player.y_offset) / tile_size; player.grid_pos_sub_y_offset = (player.y - player.y_offset) / tile_size;
+    player.x_offset = 0; if (player.delta_x < 0) player.x_offset = -8; else player.x_offset = 8;
+    player.y_offset = 0; if (player.delta_y < 0) player.y_offset = -8; else player.y_offset = 8;
 }
 
 void draw() {
@@ -219,6 +236,7 @@ int main(int argv, char *argc[]) {
     init();
     while (!window.quit) {
         event();
+        update();
         draw();
     }
     destroy();
