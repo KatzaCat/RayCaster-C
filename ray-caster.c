@@ -30,20 +30,30 @@ struct Window window;
 
 // map ->
 
-int map_x = 10, map_y = 10;
+int map_x = 20, map_y = 20;
 int tile_size = 15;
 
 const char map[] = { // want colors
-    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
-    'w', '.', '.', '.', 'w', '.', '.', '.', '.', 'w', 
-    'w', '.', '.', '.', 'w', '.', '.', 'g', '.', 'w', 
-    'w', '.', '.', '.', 'w', '.', '.', 'r', '.', 'w', 
-    'w', 'w', '.', 'w', 'w', '.', '.', 'b', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'w', 
+    'w', '.', '.', '.', 'w', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', '.', '.', '.', 'w', '.', '.', 'g', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', '.', '.', '.', 'w', '.', '.', 'r', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', 'w', '.', 'w', 'w', '.', '.', 'b', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
+    'w', 'w', 'w', 'w', 'w', '.', 'w', 'w', 'w', 'w', 'w', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'w', 
+    'w', 'w', 'w', 'w', '.', '.', '.', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', 'g', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', 'g', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', 'w', '.', 'w', 'w', '.', '.', 'b', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
 };
 
 // <- map
@@ -82,12 +92,12 @@ void raysDraw() {
 
         if (ray_angle > PI) {ray_y = (((int)player.y / tile_size) * tile_size) -   0.00001; ray_x = (player.y - ray_y) * aTan + player.x; offset_y = -tile_size; offset_x = -offset_y * aTan;} //looking up
         if (ray_angle < PI) {ray_y = (((int)player.y / tile_size) * tile_size) + tile_size; ray_x = (player.y - ray_y) * aTan + player.x; offset_y =  tile_size; offset_x = -offset_y * aTan;} //looking down
-        if (ray_angle == 0 || ray_angle == PI) {ray_x = player.x; ray_y = player.y; dof = 8;} // straght
+        if (ray_angle == 0 || ray_angle == PI) {ray_x = player.x; ray_y = player.y; dof = 20;} // straght
 
-        while (dof < 8) {
+        while (dof < 20) {
             mx = (int)(ray_x) / tile_size; my = (int)(ray_y) / tile_size; mpos = my * map_x + mx;
 
-            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {m_horizontal = map[mpos]; hx = ray_x; hy = ray_y; disH = dist(player.x, player.y, hx, hy, ray_angle); dof = 8;} // hit wall
+            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {m_horizontal = map[mpos]; hx = ray_x; hy = ray_y; disH = dist(player.x, player.y, hx, hy, ray_angle); dof = 20;} // hit wall
             else {ray_x += offset_x; ray_y += offset_y; dof += 1;}
         }
         // <- check horizontal
@@ -100,12 +110,12 @@ void raysDraw() {
 
         if (ray_angle > P2 && ray_angle < P3) {ray_x = (((int)player.x / tile_size) * tile_size) -   0.00001; ray_y = (player.x - ray_x) * nTan + player.y; offset_x = -tile_size; offset_y = -offset_x * nTan;} //looking left
         if (ray_angle < P2 || ray_angle > P3) {ray_x = (((int)player.x / tile_size) * tile_size) + tile_size; ray_y = (player.x - ray_x) * nTan + player.y; offset_x =  tile_size; offset_y = -offset_x * nTan;} //looking right
-        if (ray_angle == 0 || ray_angle == PI) {ray_x = player.x; ray_y = player.y; dof = 8;} // straght
+        if (ray_angle == 0 || ray_angle == PI) {ray_x = player.x; ray_y = player.y; dof = 20;} // straght
 
-        while (dof < 8) {
+        while (dof < 20) {
             mx = (int)(ray_x) / tile_size; my = (int)(ray_y) / tile_size; mpos = my * map_x + mx;
 
-            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {m_vertical = map[mpos]; vx = ray_x; vy = ray_y; disV = dist(player.x, player.y, vx, vy, ray_angle); dof = 8;} // hit wall
+            if (mpos > 0 && mpos < map_x * map_y && map[mpos] != '.') {m_vertical = map[mpos]; vx = ray_x; vy = ray_y; disV = dist(player.x, player.y, vx, vy, ray_angle); dof = 20;} // hit wall
             else {ray_x += offset_x; ray_y += offset_y; dof += 1;}
         }
         // <- check vertical
