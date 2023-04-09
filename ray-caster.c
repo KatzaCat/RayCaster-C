@@ -16,6 +16,24 @@
 #define WINDOW_HEIGHT 720
 #define WINDOW_TITLE "RayCaster"
 
+// textures ->
+
+// rgb 10 x 10 per
+const char brick_wall[] = {
+    'r', 'r', 'r', 'r', 'w', 'r', 'r', 'r', 'r', 'w', 
+    'r', 'r', 'r', 'r', 'w', 'r', 'r', 'r', 'r', 'w', 
+    '.', '.', '.', '.', 'w', '.', '.', '.', '.', 'w', 
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+    'w', 'r', 'r', 'r', 'r', 'w', 'r', 'r', 'r', 'r', 
+    'w', 'r', 'r', 'r', 'r', 'w', 'r', 'r', 'r', 'r', 
+    'w', '.', '.', '.', '.', 'w', '.', '.', '.', '.',
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w',
+    'r', 'r', 'r', 'r', 'w', 'r', 'r', 'r', 'r', 'w', 
+    'r', 'r', 'r', 'r', 'w', 'r', 'r', 'r', 'r', 'w', 
+};
+
+// <- textures
+
 // window ->
 
 struct Window {
@@ -34,21 +52,21 @@ int map_x = 19, map_y = 19;
 int tile_size = 15;
 
 const char map[] = { // want colors
-    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'w', 
-    'w', '.', '.', '.', 'w', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', '.', '.', '.', 'w', '.', '.', 'g', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', '.', '.', '.', 'w', '.', '.', 'r', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', 'w', '.', 'w', 'w', '.', '.', 'b', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'g', 
-    'w', 'w', 'w', 'w', 'w', '.', 'w', 'w', 'w', 'w', 'w', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'w', 
+    'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
+    'w', '.', '.', '.', 'w', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', 'w', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', 'w', '.', '.', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', 'w', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', 'w', 'w', 'w', 'w', '.', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
     'w', 'w', 'w', 'w', '.', '.', '.', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 
     'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', '.', 'g', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', '.', '.', '.', '.', '.', 'g', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
-    'w', 'w', '.', 'w', 'w', '.', '.', 'b', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
+    'w', 'w', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
     'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 
     'w', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
     'w', '.', '.', '.', '.', '.', '.', '.', '.', 'w', 'w', '.', '.', '.', '.', '.', '.', '.', 'w', 
@@ -121,26 +139,46 @@ void raysDraw() {
         // <- check vertical
 
         // draw ray
+        float shade = 1;
         if (disV < disH) {
             ray_x = vx; ray_y = vy; dis = disV; 
-            if (m_vertical == 'w') SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255);
-            if (m_vertical == 'r') SDL_SetRenderDrawColor(window.renderer, 255,   0,   0, 255);
-            if (m_vertical == 'g') SDL_SetRenderDrawColor(window.renderer,   0, 255,   0, 255);
-            if (m_vertical == 'b') SDL_SetRenderDrawColor(window.renderer,   0,   0, 255, 255);
+            //if (m_vertical == 'w') SDL_SetRenderDrawColor(window.renderer, 255, 255, 255, 255);
+            //if (m_vertical == 'r') SDL_SetRenderDrawColor(window.renderer, 255,   0,   0, 255);
+            //if (m_vertical == 'g') SDL_SetRenderDrawColor(window.renderer,   0, 255,   0, 255);
+            //if (m_vertical == 'b') SDL_SetRenderDrawColor(window.renderer,   0,   0, 255, 255);
         }
         if (disV > disH) {
             ray_x = hx; ray_y = hy; dis = disH; 
-            if (m_horizontal == 'w') SDL_SetRenderDrawColor(window.renderer, 127, 127, 127, 255);
-            if (m_horizontal == 'r') SDL_SetRenderDrawColor(window.renderer, 127,   0,   0, 255);
-            if (m_horizontal == 'g') SDL_SetRenderDrawColor(window.renderer,   0, 127,   0, 255);
-            if (m_horizontal == 'b') SDL_SetRenderDrawColor(window.renderer,   0,   0, 127, 255);
+            shade = 0.5;
+            //if (m_horizontal == 'w') SDL_SetRenderDrawColor(window.renderer, 127, 127, 127, 255);
+            //if (m_horizontal == 'r') SDL_SetRenderDrawColor(window.renderer, 127,   0,   0, 255);
+            //if (m_horizontal == 'g') SDL_SetRenderDrawColor(window.renderer,   0, 127,   0, 255);
+            //if (m_horizontal == 'b') SDL_SetRenderDrawColor(window.renderer,   0,   0, 127, 255);
         }
 
         // draw walls ->
         float cos_angle = player.angle - ray_angle; if (cos_angle < 0) {cos_angle += 2*PI;} if (cos_angle > 2*PI) {cos_angle -= 2*PI;} dis = dis * cos(cos_angle); // removes fish eye
-        float lineH = (tile_size * WINDOW_HEIGHT) / dis; if (lineH > WINDOW_HEIGHT) {lineH = WINDOW_HEIGHT;}
+        float lineH = (tile_size * WINDOW_HEIGHT) / dis; 
+        float texture_y_step = 10.0 / (float)lineH;
+        float texture_y_offset = 0;
+        if (lineH > WINDOW_HEIGHT) {texture_y_offset = (lineH - WINDOW_HEIGHT) / 2; lineH = WINDOW_HEIGHT;}
         float lineO = 360 - lineH / 2;
-        SDL_RenderDrawLine(window.renderer, ray, lineO, ray, lineH + lineO);
+
+        float texture_y = texture_y_offset * texture_y_step;
+        float texture_x;
+
+        if (shade == 1) {texture_x = (int)(ray_y / 2) % 10; if (ray_angle > P2 && ray_angle < P3) texture_x = 9 - texture_x;}
+        else            {texture_x = (int)(ray_x / 2) % 10; if (ray_angle > PI                  ) texture_x = 9 - texture_x;}
+        for (int y = 0; y < lineH; y++) {
+            char color = brick_wall[(int)(texture_y) * 10 + (int)(texture_x)];
+            if (color == '.') SDL_SetRenderDrawColor(window.renderer,                  0,                  0,                  0, 255);
+            if (color == 'w') SDL_SetRenderDrawColor(window.renderer, (int)(255 * shade), (int)(255 * shade), (int)(255 * shade), 255);
+            if (color == 'r') SDL_SetRenderDrawColor(window.renderer, (int)(255 * shade),                  0,                  0, 255);
+            if (color == 'g') SDL_SetRenderDrawColor(window.renderer,                  0, (int)(255 * shade),                  0, 255);
+            if (color == 'b') SDL_SetRenderDrawColor(window.renderer,                  0,                  0, (int)(255 * shade), 255);
+            SDL_RenderDrawPoint(window.renderer, ray, y + lineO);
+            texture_y += texture_y_step;
+        }
         // <- draw walls
 
         ray_angle += DEG / 21.3333; if (ray_angle < 0) {ray_angle += 2*PI;} if (ray_angle > 2*PI) {ray_angle -= 2*PI;}
